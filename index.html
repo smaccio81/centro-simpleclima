@@ -261,7 +261,7 @@ footer{margin-top:44px;padding-top:16px;border-top:1px solid var(--line);font-si
 <p class="muted">Elegí las opciones y se arma solo. Después <b>editalo en el cuadro</b> — es la base, no una jaula. Lo que cambies vale más que lo que estaba.</p>
 
 <div class="rule g">
-<p style="margin:0"><b>El circuito de gimnasios es el oficial aprobado por Seba y el equipo.</b> Escalera de menor a mayor: T1 ofrece asesorar → si dice sí, pase a quien arma los proyectos → si no contesta, reflote (con foto cuando esté) → T3 ofrece la línea portátil → T4 cierra cálido dejando la puerta abierta. Cada mensaje trae algo nuevo; ninguno aprieta.</p>
+<p style="margin:0"><b>El circuito de gimnasios es el oficial aprobado por Seba y el equipo.</b> T1 ofrece asesorar → si dice sí, pase a quien arma los proyectos → si no contesta, T2 ofrece la línea portátil (la opción simple, sin obra) → T3 muestra una instalación real con foto → T4 cierra cálido dejando la puerta abierta. Cada mensaje trae algo nuevo; ninguno insiste con lo mismo.</p>
 </div>
 
 <div class="gen">
@@ -269,8 +269,8 @@ footer{margin-top:44px;padding-top:16px;border-top:1px solid var(--line);font-si
 <div><label>Etapa</label><select id="s_et">
 <option value="t1">T1 · Primer mensaje</option>
 <option value="si">Contestó que sí · pase al proyectista</option>
-<option value="t2">T2 · Reflote (no contestó)</option>
-<option value="t3">T3 · La línea portátil</option>
+<option value="t2">T2 · La línea portátil (no contestó)</option>
+<option value="t3">T3 · La muestra (foto de instalación)</option>
 <option value="t4">T4 · Cierre cálido</option>
 <option value="sos">Rescate · desapareció</option>
 <option value="ret">Retomar pausado</option>
@@ -370,7 +370,7 @@ footer{margin-top:44px;padding-top:16px;border-top:1px solid var(--line);font-si
 
 <div class="rule w">
 <h3>Cadencia y uso</h3>
-<p><b>Un video por semana</b> alcanza y sostiene dos meses de presencia. Cada video vive tres veces: posteo en el feed, historia destacada en su categoría, y material del reflote de Andrea por WhatsApp.</p>
+<p><b>Un video por semana</b> alcanza y sostiene dos meses de presencia. Cada video vive tres veces: posteo en el feed, historia destacada en su categoría, y material que Andrea manda por WhatsApp en el T3.</p>
 <p style="margin-bottom:0"><b>Cuando haya 9 posteos:</b> se sube la base de teléfonos a Meta como audiencia personalizada y se le muestra V2 y V4 a los mismos contactos que Andrea está escribiendo. Presupuesto chico, audiencia de 539 — es reconocimiento, no captación.</p>
 </div>
 </div>
@@ -426,7 +426,7 @@ footer{margin-top:44px;padding-top:16px;border-top:1px solid var(--line);font-si
 
 <div class="rule w">
 <h3>Pendientes para completar la caja</h3>
-<p style="margin-bottom:0">1 · La tabla de precios de portátiles (Seba). 2 · La zona de Octavio (para cerrar su recuadro). 3 · El @ del Instagram (para el checklist de Luciana). 4 · Los 5–6 modelos que se manejan en stock (para el CRM y la calculadora). 5 · La foto de una instalación en gym (para el reflote).</p>
+<p style="margin-bottom:0">1 · La tabla de precios de portátiles (Seba). 2 · La zona de Octavio (para cerrar su recuadro). 3 · El @ del Instagram (para el checklist de Luciana). 4 · Los 5–6 modelos que se manejan en stock (para el CRM y la calculadora). 5 · La foto de una instalación en gym (para el T3, la muestra).</p>
 </div>
 
 <footer>Simple Clima · Representante Rotoplast NEA · Centro de operaciones v2 · Temporada 2026/27</footer>
@@ -460,7 +460,7 @@ if(h0) abrirTab(h0);
 /* ───── armador ───── */
 var USTED=[[/\bTe escribí\b/g,"Le escribí"],[/\bte escribí\b/g,"le escribí"],[/\bTe hago\b/g,"Le hago"],[/\bte hago\b/g,"le hago"],
 [/\bTe dejo\b/g,"Le dejo"],[/\bte dejo\b/g,"le dejo"],[/\bTe aviso\b/g,"Le aviso"],[/\bte aviso\b/g,"le aviso"],
-[/\bTe comento\b/g,"Le comento"],[/\bte comento\b/g,"le comento"],[/\bTe reflote\b/g,"Le reflote"],[/\bte reflote\b/g,"le reflote"],
+[/\bTe comento\b/g,"Le comento"],[/\bte comento\b/g,"le comento"],
 [/\btenés\b/g,"tiene"],[/\bTenés\b/g,"Tiene"],[/\bquerés\b/g,"quiere"],[/\bQuerés\b/g,"Quiere"],
 [/\bpasame\b/g,"páseme"],[/\bPasame\b/g,"Páseme"],[/\bdecime\b/g,"dígame"],[/\bDecime\b/g,"Dígame"],
 [/\bcontame\b/g,"cuénteme"],[/\bavisame\b/g,"avíseme"],[/\bme avisás\b/g,"me avisa"],[/\bte queda\b/g,"le queda"],
@@ -504,13 +504,13 @@ prospeccion:"Te tengo anotado de cuando anduve recorriendo la zona. Pensando en 
 referido:"Me pasó tu contacto {ref}. Te escribo pensando en esta temporada:"};
 var GYM={
 t1:"Hola {n}, ¿cómo va? Soy {r}, de Simple Clima — Rotoplast en el NEA.\n\n{apertura} ¿cómo se pone la sala en verano?\n\nTenemos una solución para espacios grandes como el tuyo: climatiza y renueva el aire, gastando muy poco. ¿Te parece que te asesoremos? Sin compromiso.",
-t2:"{n}, ¿cómo va? Te reflote el mensaje por el tema del calor de la sala — a esta altura los que lo resuelven llegan tranquilos a la temporada.\n\nSi te interesa te cuento en dos líneas cómo funciona y qué gasto tiene. Y si no es el momento, avisame y no te molesto más.\n\n[+ FOTO de una instalación en gym, cuando esté]",
-t3:"{n}, ¿cómo va? Te comento algo más por si te sirve: además de los equipos que se instalan, tenemos la línea portátil — se enchufan y listo, sin obra. Para una sala es la forma más simple de probar el sistema, y otra inversión.\n\n¿Te paso info de esos?",
+t2:"{n}, ¿cómo va? Te comento algo más por si te sirve: además de los equipos que se instalan, tenemos la línea portátil — se enchufan y listo, sin obra. Para una sala es la forma más simple de probar el sistema, y otra inversión.\n\n¿Te paso info de esos?",
+t3:"{n}, ¿cómo va? Te comparto cómo quedó un gimnasio acá en la zona, así lo ves andando:\n\n[FOTO O VIDEO DE LA INSTALACIÓN]\n\nSi querés saber qué iría para tu sala, avisame.",
 t4:"{n}, ¿cómo va? Para no ponerme insistente con el tema, te dejo mi contacto y lo retomás vos cuando quieras — me escribís y lo vemos con tiempo.\n\n¡Buena temporada!"};
 
 var ET={
-t2:"{n}, ¿cómo va? Te reflote el mensaje por el tema del calor — a esta altura los que lo resuelven llegan tranquilos a la temporada.\n\nSi te interesa te cuento en dos líneas cómo funciona y qué gasto tiene. Y si no es el momento, avisame y no te molesto más.",
-t3:"{n}, ¿cómo va? Te comento algo más por si te sirve: además de los equipos que se instalan, tenemos la línea portátil — se enchufan y listo, sin obra. Es la forma más simple de probar el sistema, y otra inversión.\n\n¿Te paso info de esos?",
+t2:"{n}, ¿cómo va? Te comento algo más por si te sirve: además de los equipos que se instalan, tenemos la línea portátil — se enchufan y listo, sin obra. Es la forma más simple de probar el sistema, y otra inversión.\n\n¿Te paso info de esos?",
+t3:"{n}, ¿cómo va? Te comparto cómo quedó una instalación acá en la zona, así lo ves andando:\n\n[FOTO O VIDEO DE LA INSTALACIÓN]\n\nSi querés saber qué iría para tu lugar, avisame.",
 t4:"{n}, ¿cómo va? Para no ponerme insistente con el tema, te dejo mi contacto y lo retomás vos cuando quieras — me escribís y lo vemos con tiempo.\n\n¡Buena temporada!",
 sos:"{n}, ¿seguís por ahí? 🙂\n\nNo sé si se te complicó, si quedó para más adelante o si no te cerró. Cualquiera de las tres me sirve — así sé si te sigo escribiendo o te dejo tranquilo.",
 ret:"Hola {n}, ¿cómo andás? Quedamos en que te escribiera por estas fechas, así que acá estoy cumpliendo 🙂\n\n¿Sigue en pie el tema? Si querés te paso el precio actualizado y la disponibilidad de instalación de este mes."};
