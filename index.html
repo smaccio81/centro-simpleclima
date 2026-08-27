@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Centro Simple Clima</title>
+<style>
+:root{--ink:#16160F;--ink2:#3E3E33;--ink3:#71716A;--bg:#FAFAF6;--line:#E4E3D8;--acc:#B9DB1F;--accd:#6E8300;
+--hot:#C8452C;--warm:#E2762E;--cool:#3F7FA6;--green:#4F7A55;--pur:#7A5C86;--sand:#8A6E3F}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:16px;line-height:1.55}
+.wrap{max-width:900px;margin:0 auto;padding:0 18px 90px}
+
+header{background:var(--ink);color:#fff;padding:26px 0 0}
+header .wrap{padding-bottom:0}
+.brand{display:inline-block;border:2px solid var(--acc);color:var(--acc);font-weight:800;letter-spacing:.16em;font-size:10px;padding:4px 8px;border-radius:3px;margin-bottom:11px}
+header h1{margin:0 0 4px;font-size:clamp(22px,4.4vw,30px);letter-spacing:-.02em;line-height:1.14}
+header p{margin:0 0 16px;color:#B6B6A8;font-size:14px}
+.tabs{display:flex;gap:2px;flex-wrap:wrap;padding-bottom:0}
+.tab{font-family:inherit;font-size:13.5px;font-weight:700;background:transparent;color:#9C9C8E;border:0;border-bottom:3px solid transparent;padding:10px 13px;cursor:pointer}
+.tab:hover{color:#fff}
+.tab.on{color:var(--acc);border-bottom-color:var(--acc)}
+
+.pane{display:none;padding-top:26px}
+.pane.on{display:block}
+
+h2{font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--accd);margin:34px 0 3px;font-weight:800}
+h2:first-child{margin-top:0}
+h2+.l{margin:0 0 14px;font-size:clamp(18px,3vw,23px);font-weight:700;letter-spacing:-.015em;line-height:1.28}
+h3{font-size:16.5px;margin:24px 0 6px;letter-spacing:-.01em}
+p{margin:0 0 12px;max-width:740px}
+.muted{color:var(--ink3);font-size:13.5px}
+hr{border:0;border-top:1px solid var(--line);margin:34px 0}
+
+.big{background:#fff;border:2px solid var(--ink);border-radius:14px;padding:19px 22px;margin:14px 0}
+.big .k{font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink3);font-weight:800;margin-bottom:7px}
+.big .v{font-size:clamp(18px,3vw,23px);font-weight:700;line-height:1.32;letter-spacing:-.015em}
+
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(128px,1fr));gap:10px;margin:16px 0}
+.tile{background:#fff;border:1px solid var(--line);border-radius:11px;padding:12px 14px}
+.tile .n{font-size:23px;font-weight:800;letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums}
+.tile .x{font-size:11.5px;color:var(--ink3);margin-top:5px;line-height:1.3}
+.tile.g .n{color:var(--green)}.tile.h .n{color:var(--hot)}
+
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:14px;background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+th,td{text-align:left;padding:10px 11px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink3);font-weight:700;background:#F4F3EA}
+tr:last-child td{border-bottom:0}
+td.n{font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:700}
+
+.rule{background:#fff;border:1px solid var(--line);border-left:4px solid var(--acc);border-radius:10px;padding:14px 17px;margin:13px 0}
+.rule.w{border-left-color:var(--warm);background:#FDF8F2}
+.rule.r{border-left-color:var(--hot);background:#FDF3F1}
+.rule.g{border-left-color:var(--green);background:#F4F8F3}
+.rule h3,.rule h4{margin-top:0}
+.rule p:last-child{margin-bottom:0}
+
+.role{background:#fff;border:1px solid var(--line);border-top:5px solid var(--c);border-radius:13px;padding:18px 20px;margin:12px 0}
+.role h3{margin:0 0 3px;font-size:19px}
+.role .sub{font-size:13px;color:var(--ink3);margin-bottom:12px}
+.role ol{margin:0;padding-left:20px;font-size:14.5px}
+.role ol li{margin-bottom:7px}
+.role ol li b{color:var(--ink)}
+
+.gen{background:#fff;border:2px solid var(--ink);border-radius:15px;padding:19px;margin:14px 0}
+.gg{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:11px;margin-bottom:13px}
+label{display:block;font-size:10.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--ink3);margin-bottom:4px}
+select,input[type=text]{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:8px;font-family:inherit;font-size:14.5px;background:#FBFBF5;color:var(--ink)}
+select:focus,input:focus,textarea:focus{outline:2px solid var(--acc);outline-offset:-1px;background:#fff}
+textarea.out{width:100%;min-height:230px;padding:13px;border:1px solid var(--line);border-radius:10px;font-family:inherit;font-size:15px;line-height:1.6;background:#FBFBF5;resize:vertical;color:var(--ink)}
+.gbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;align-items:center}
+button.b{font-family:inherit;font-size:13px;font-weight:700;border:1px solid var(--ink);background:var(--ink);color:var(--acc);padding:9px 15px;border-radius:8px;cursor:pointer}
+button.b:hover{background:#2A2A1E}
+button.b.sec{background:#fff;color:var(--ink2);border-color:var(--line)}
+button.b.sec:hover{background:#F0EFE6}
+.gmsg{font-size:12.5px;color:var(--accd);font-weight:700}
+.gnote{font-size:12.5px;color:var(--ink3);margin-top:8px}
+
+.lib{background:#fff;border:1px solid var(--line);border-radius:11px;margin:10px 0;overflow:hidden}
+.lib .h{display:flex;align-items:center;gap:8px;padding:9px 13px;background:#F4F3EA;border-bottom:1px solid var(--line);cursor:pointer;flex-wrap:wrap}
+.lib .tag{font-size:10px;font-weight:800;letter-spacing:.06em;background:var(--ink);color:var(--acc);padding:3px 7px;border-radius:4px}
+.lib .nm{font-size:13.5px;font-weight:700;color:var(--ink2)}
+.lib .cp{margin-left:auto;font-size:11.5px;border:1px solid var(--line);background:#fff;color:var(--ink2);padding:4px 10px;border-radius:6px;cursor:pointer;font-family:inherit}
+.lib .cp:hover{background:var(--ink);color:#fff;border-color:var(--ink)}
+.lib pre{margin:0;padding:13px;white-space:pre-wrap;font-family:inherit;font-size:14px;line-height:1.55}
+
+.vid{background:#fff;border:1px solid var(--line);border-left:5px solid var(--c,#7A5C86);border-radius:12px;padding:15px 18px;margin:11px 0}
+.vid .top{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;margin-bottom:6px}
+.vid .num{font-size:11px;font-weight:800;color:#fff;background:var(--c,#7A5C86);padding:3px 8px;border-radius:5px}
+.vid .t{font-size:16.5px;font-weight:700}
+.vid .fmt{margin-left:auto;font-size:11.5px;color:var(--ink3);font-weight:700}
+.vid p{font-size:14px;margin:0 0 8px}
+.vid .gui{background:#FBFBF5;border-left:3px solid var(--acc);padding:10px 12px;border-radius:0 7px 7px 0;font-size:13.5px;font-style:italic;color:var(--ink2)}
+
+.chk{list-style:none;padding:0;margin:14px 0}
+.chk li{background:#fff;border:1px solid var(--line);border-radius:9px;padding:11px 14px;margin-bottom:7px;font-size:14px;display:grid;grid-template-columns:22px 1fr;gap:9px;align-items:start}
+.chk li:before{content:"☐";font-size:16px;line-height:1.2;color:var(--ink3)}
+.chk li b{display:block}
+
+.sem{display:grid;grid-template-columns:96px 1fr;gap:14px;padding:12px 0;border-top:1px solid var(--line)}
+.sem:last-of-type{border-bottom:1px solid var(--line)}
+.sem .w{font-weight:800;font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink3);padding-top:2px}
+.sem .b{font-size:14px}
+.sem .b b{display:block}
+
+.flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:11px;margin:20px 0}
+.flow .bx{background:#fff;border:1px solid var(--line);border-top:4px solid var(--c);border-radius:11px;padding:14px 15px}
+.flow .bx .t{font-size:10.5px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--c);margin-bottom:5px}
+.flow .bx .n{font-size:15.5px;font-weight:700;line-height:1.25;margin-bottom:5px}
+.flow .bx .d{font-size:12.5px;color:var(--ink3);line-height:1.4}
+footer{margin-top:44px;padding-top:16px;border-top:1px solid var(--line);font-size:12px;color:var(--ink3)}
+@media print{.tabs{display:none}.pane{display:block!important}header{background:#fff;color:#000}}
+</style>
+</head>
+<body>
+
+<header><div class="wrap">
+<div class="brand">SIMPLE CLIMA · ROTOPLAST NEA</div>
+<h1>Centro de operaciones</h1>
+<p>Temporada 2026/27 · Todo el sistema en un solo lugar.</p>
+<div class="tabs">
+<button class="tab on" data-p="plan">El plan</button>
+<button class="tab" data-p="rol">Quién sos</button>
+<button class="tab" data-p="msj">Mensajes</button>
+<button class="tab" data-p="video">Contenido</button>
+<button class="tab" data-p="viernes">El viernes</button>
+<button class="tab" data-p="caja">Herramientas</button>
+</div>
+</div></header>
+
+<div class="wrap">
+
+<!-- ══════════════ PLAN ══════════════ -->
+<div class="pane on" id="p_plan">
+
+<div class="big">
+<div class="k">Qué vendemos</div>
+<div class="v">Climatizamos lugares grandes donde el aire acondicionado no conviene — y con aire renovado, no el mismo aire dando vueltas.</div>
+</div>
+
+<p>Tres casos entran: donde el aire <strong>no da</strong> (portón abierto, patio, techo altísimo), donde <strong>no conviene</strong> (instalarlo sale una fortuna y la factura de enero no cierra) y donde <strong>no es lo mejor</strong> (gimnasios y gastronomía: el aire recircula olor, humo y transpiración — nosotros traemos aire de afuera).</p>
+
+<div class="tiles">
+<div class="tile"><div class="n">539</div><div class="x">contactos en el CRM</div></div>
+<div class="tile"><div class="n">75%</div><div class="x">en Corrientes y Resistencia</div></div>
+<div class="tile g"><div class="n">75–150</div><div class="x">mil USD el objetivo de temporada</div></div>
+<div class="tile h"><div class="n">Oct</div><div class="x">se cierra la ventana buena de instalación</div></div>
+</div>
+
+<h2>01</h2><p class="l">Las olas — en qué orden se trabaja la base</p>
+<table>
+<tr><th>Ola</th><th>Quiénes</th><th class="n">Cant.</th><th>Cuándo</th></tr>
+<tr><td><b>0</b></td><td>Los que ya nos conocen: ferias, prospección propia, referidos</td><td class="n">90</td><td>Primera semana</td></tr>
+<tr><td><b>1</b></td><td>Deportivo: gimnasios, pádel, clubes</td><td class="n">140</td><td>Semana siguiente</td></tr>
+<tr><td><b>2</b></td><td>Galpones: industria, agro, mayoristas</td><td class="n">103</td><td>+2 semanas</td></tr>
+<tr><td><b>3</b></td><td>Estaciones y gastronómico</td><td class="n">126</td><td>Septiembre</td></tr>
+<tr><td><b>4</b></td><td>El resto</td><td class="n">72</td><td>Mediados de septiembre</td></tr>
+<tr><td><b>5</b></td><td>Fuera de zona — pausados</td><td class="n">8</td><td>—</td></tr>
+</table>
+<p class="muted">Regla: no se abre una ola hasta que la anterior esté toda en su segundo mensaje. Los 38 del Chaco interior se trabajan con llamada + medición a distancia hasta que haya viaje.</p>
+
+<h2>02</h2><p class="l">El calendario</p>
+<div class="sem"><div class="w">Ago sem 1</div><div class="b"><b>Preparación</b>CRM cargado (plantillas, ritmo 0/4/7/10, modelos) · Instagram presentable con Luciana · foto de instalación lista.</div></div>
+<div class="sem"><div class="w">Ago sem 2</div><div class="b"><b>Ola 0</b>Andrea arranca con los 90 conocidos. Prueba de audio contra texto en 40 contactos.</div></div>
+<div class="sem"><div class="w">Ago sem 3–4</div><div class="b"><b>Olas 1 y 2</b>Deportivo y galpones. Campaña de reconocimiento en Meta corriendo en paralelo.</div></div>
+<div class="sem"><div class="w">Septiembre</div><div class="b"><b>Ola 3 + reactivación</b>Estaciones y gastro. Los pausados "antes de temporada" vuelven solos el 1/9. Primer día de calor: se filma el video del termómetro.</div></div>
+<div class="sem"><div class="w">Octubre</div><div class="b"><b>Cierre de ventana</b>Ola 4 y foco total en cerrar calientes. Última instalación cómoda antes de las lluvias.</div></div>
+<div class="sem"><div class="w">Nov–Feb</div><div class="b"><b>Temporada</b>Entra demanda sola. Barrida de los "no respondió". Cada instalación: foto, video y pedido de referido.</div></div>
+
+<h2>03</h2><p class="l">Las cuatro reglas de la casa</p>
+<div class="rule"><p style="margin:0"><b>1 · Si no está en el CRM, no pasó.</b> Ni para comisiones, ni para la reunión del viernes. Vale para todos, empezando por Seba.</p></div>
+<div class="rule"><p style="margin:0"><b>2 · Cada contacto termina en algo.</b> Próxima fecha, pausado con motivo, ganado o perdido con motivo. Nunca en el aire.</p></div>
+<div class="rule"><p style="margin:0"><b>3 · Los precios salen de una herramienta, no de la memoria.</b> Portátiles: la tabla de referencia. Todo lo demás: el cotizador.</p></div>
+<div class="rule"><p style="margin:0"><b>4 · Cada venta produce material.</b> Foto del lugar, video del equipo andando, y el pedido de referido cuando el cliente está contento.</p></div>
+
+<h2>04</h2><p class="l">Más allá de nosotros tres — la red</p>
+<p>El equipo propio tiene techo. Estos canales multiplican sin contratar a nadie:</p>
+<table>
+<tr><th>Canal</th><th>Qué hace</th><th>Cómo se activa</th></tr>
+<tr><td><b>Instaladores de aire</b></td><td>Están en cada galpón donde el split no da. Hoy dicen "acá no te conviene" y se van.</td><td>Comisión por derivación cerrada. Se les presenta el producto y se les deja tarjeta.</td></tr>
+<tr><td><b>Arquitectos</b></td><td>Especifican en obra nueva. Ya hay uno en la base (Villa Ángela).</td><td>Se les manda ficha técnica y un caso armado. Comisión o precio preferencial.</td></tr>
+<tr><td><b>Eco Aires y derivadores</b></td><td>Ya derivan informalmente — hay más de uno mezclado en la base.</td><td>Formalizar: qué gana el que deriva, y avisarles que existe el acuerdo.</td></tr>
+<tr><td><b>Corralones grandes</b></td><td>Punto de exhibición en el interior.</td><td>Un equipo en consignación andando en el local.</td></tr>
+<tr><td><b>Clientes instalados</b></td><td>El canal más barato que existe.</td><td>En enero, con el equipo andando: "¿conocés a alguien más que la esté pasando mal con el calor?"</td></tr>
+</table>
+</div>
+
+<!-- ══════════════ ROL ══════════════ -->
+<div class="pane" id="p_rol">
+
+<p class="l" style="margin-top:0">Según quién sos, esto es lo tuyo</p>
+<p class="muted">Si entra alguien nuevo al equipo, lee su recuadro y ya sabe qué hacer. No hace falta leer nada más.</p>
+
+<div class="role" style="--c:#3F7FA6">
+<h3>Andrea — prospección</h3>
+<div class="sub">Abre puertas. No cotiza equipos de pared ni proyectos.</div>
+<ol>
+<li><b>Todos los días:</b> abrir la pestaña <b>Hoy</b> del CRM y dejarla en cero. Unos 25 primeros mensajes por día, entre 8–11:30 o 16:30–19:30. Nunca en la siesta ni el finde.</li>
+<li><b>Por cada contacto:</b> el CRM te dice quién y qué etapa toca → armás el mensaje en la pestaña <b>Mensajes</b> de acá → mandás → volvés al CRM y tocás <b>✓ Registrar que le escribí</b>. Ese botón no se saltea nunca. <span class="muted">(Los textos viven solo acá — la plantilla del CRM te recuerda venir.)</span></li>
+<li><b>Al que contesta:</b> temperatura ese mismo día (❄️/🌤️/🔥) y completarle rubro y ubicación en la ficha.</li>
+<li><b>Si dice "sí" al asesoramiento:</b> mandar el mensaje de pase ("¿te parece que te contacte quien arma los proyectos?") → 🔥 → <b>Pasar a…</b> el mismo día.</li>
+<li><b>Si pide precio de un portátil:</b> dar la referencia de la tabla, aclarando que el número fino depende del modelo. <b>Todo lo demás se deriva.</b></li>
+<li><b>Si es cuenta grande</b> (planta, cadena, varias sedes): no escribirle. Marcar Tamaño: Grande y avisar a Seba.</li>
+<li><b>Si dice "más adelante":</b> Pausar con motivo y fecha. Eso es un éxito, no un fracaso.</li>
+<li><b>Si no responde tras 4 mensajes:</b> Perdido → "no respondió más". Vuelven en noviembre.</li>
+</ol>
+</div>
+
+<div class="role" style="--c:#8A6E3F">
+<h3>Octavio — cotización de su zona</h3>
+<div class="sub">Zona: [DEFINIR]. Seba le va pasando las herramientas de cotización.</div>
+<ol>
+<li><b>Cuando Andrea deriva un caliente de tu zona:</b> cotizarlo el mismo día o el siguiente. Un caliente que espera tres días se enfría.</li>
+<li><b>Cotizar siempre con el cotizador</b> — nunca un número de memoria. Si el caso no entra en el cotizador, consultarlo con Seba antes de responder.</li>
+<li><b>Galpón cerrado = extractores en el presupuesto.</b> Preguntar siempre si hay portón o salida de aire. Y el ahorro se dice completo: el equipo hasta 90% menos; el sistema instalado, alrededor del 70%.</li>
+<li><b>Cada presupuesto enviado:</b> adjuntarlo en la ficha del CRM + cargar el modelo cotizado + acordar fecha de seguimiento ("¿lo vemos el jueves?"). Presupuesto sin fecha es presupuesto perdido.</li>
+<li><b>Cada venta cerrada:</b> Ganado en el CRM + foto del lugar instalado + pedir el referido cuando el equipo ande.</li>
+</ol>
+</div>
+
+<div class="role" style="--c:#4F7A55">
+<h3>Seba — dirección</h3>
+<div class="sub">Cotiza lo que no es de Octavio, maneja cuentas grandes, y sostiene el sistema.</div>
+<ol>
+<li><b>Cuentas grandes y visitas:</b> las que Andrea marca Grande las llamás vos. En el interior, la venta es en el galpón.</li>
+<li><b>El viernes, 30 minutos con los tres:</b> pestaña <b>El viernes</b> de acá. Se mira la pantalla del CRM, no un Excel.</li>
+<li><b>Decidir la apertura de olas:</b> solo vos autorizás abrir la siguiente.</li>
+<li><b>Alimentar la red:</b> instaladores, arquitectos, derivadores. Un acuerdo nuevo por mes es suficiente.</li>
+<li><b>Cargar lo tuyo en el CRM:</b> si vos cotizás por afuera, nadie más carga nada.</li>
+</ol>
+</div>
+
+<div class="role" style="--c:#7A5C86">
+<h3>Luciana — contenido y redes</h3>
+<div class="sub">Diseñadora. Su material está en la pestaña Contenido.</div>
+<ol>
+<li><b>Primero:</b> el perfil de Instagram al mínimo presentable (checklist en Contenido). Antes de que salga el primer WhatsApp.</li>
+<li><b>Después:</b> las 8 ideas de video del brief, en orden. Una por semana alcanza. <b>Son sugerencias:</b> vos desarrollás formato, estética y edición — y si una idea no funciona, la cambiás y avisás.</li>
+<li><b>La regla creativa:</b> se muestra la solución, no el producto. El equipo aparece andando en un lugar real, nunca en fondo blanco.</li>
+<li><b>Con Seba:</b> la campaña de reconocimiento en Meta cuando haya 9 posteos arriba.</li>
+</ol>
+</div>
+
+<div class="role" style="--c:#9A9382">
+<h3>Alguien nuevo que se incorpora</h3>
+<div class="sub">Bienvenido. Tu primer día:</div>
+<ol>
+<li>Leé la pestaña <b>El plan</b> (10 minutos). Ahí está qué vendemos y a quién.</li>
+<li>Leé el recuadro del rol que vas a cubrir, acá arriba.</li>
+<li>Pedile a Seba acceso al CRM y mirá 10 fichas de contactos ganados y perdidos: ahí está la historia real.</li>
+<li>Tu primera semana acompañás — mensajes con Andrea o cotizaciones con Octavio — antes de tocar nada solo.</li>
+</ol>
+</div>
+</div>
+
+<!-- ══════════════ MENSAJES ══════════════ -->
+<div class="pane" id="p_msj">
+
+<p class="l" style="margin-top:0">Armador de mensajes</p>
+<p class="muted">Elegí las opciones y se arma solo. Después <b>editalo en el cuadro</b> — es la base, no una jaula. Lo que cambies vale más que lo que estaba.</p>
+
+<div class="rule g">
+<p style="margin:0"><b>El circuito de gimnasios es el oficial aprobado por Seba y el equipo.</b> Escalera de menor a mayor: T1 ofrece asesorar → si dice sí, pase a quien arma los proyectos → si no contesta, reflote (con foto cuando esté) → T3 ofrece la línea portátil → T4 cierra cálido dejando la puerta abierta. Cada mensaje trae algo nuevo; ninguno aprieta.</p>
+</div>
+
+<div class="gen">
+<div class="gg">
+<div><label>Etapa</label><select id="s_et">
+<option value="t1">T1 · Primer mensaje</option>
+<option value="si">Contestó que sí · pase al proyectista</option>
+<option value="t2">T2 · Reflote (no contestó)</option>
+<option value="t3">T3 · La línea portátil</option>
+<option value="t4">T4 · Cierre cálido</option>
+<option value="sos">Rescate · desapareció</option>
+<option value="ret">Retomar pausado</option>
+</select></div>
+<div><label>Origen</label><select id="s_or">
+<option value="recontacto">Ya le escribimos (base vieja)</option>
+<option value="frio">Nunca contactado</option>
+<option value="obera">Feria Oberá abr-26</option>
+<option value="agronea">AgroNEA (Chaco)</option>
+<option value="prospeccion">Prospección propia</option>
+<option value="referido">Referido</option>
+</select></div>
+<div><label>Rubro</label><select id="s_ru">
+<option value="gym">Gimnasio / deportivo</option>
+<option value="galpon">Galpón / industria</option>
+<option value="gastro">Gastronómico / eventos</option>
+<option value="estacion">Estación de servicio</option>
+<option value="agro">Agro</option>
+<option value="nose">No sé a qué se dedica</option>
+</select></div>
+<div><label>Zona (define el tono)</label><select id="s_zo">
+<option value="corrientes">Corrientes · voseo cálido</option>
+<option value="resistencia">Resistencia · voseo directo</option>
+<option value="misiones">Misiones · usted, corto</option>
+<option value="chaco">Chaco interior · usted, visita</option>
+</select></div>
+<div><label>Nombre del contacto</label><input type="text" id="s_no" placeholder="(opcional)"></div>
+<div><label>Quién escribe</label><input type="text" id="s_re" value="Andrea"></div>
+</div>
+<textarea class="out" id="salida"></textarea>
+<div class="gbar">
+<button class="b" onclick="copiarMsj()">Copiar mensaje</button>
+<button class="b sec" onclick="armarMsj()">Volver a la base</button>
+<button class="b sec" onclick="mejorarIA()">🪄 Mejorar con IA</button>
+<span class="gmsg" id="gmsg"></span>
+</div>
+<div class="gnote">El armador respeta las reglas: nada de precios, nada de pronóstico en el T1, y trato de usted en Misiones y Chaco. Si editás, mantené esas tres.<br>
+<b>🪄 Mejorar con IA:</b> copia el mensaje junto con las reglas de la casa, listo para pegar en Claude o ChatGPT. La IA te devuelve la versión pulida sin romper ninguna regla.</div>
+</div>
+
+<h3>Respuestas listas — para cuando contestan</h3>
+<p class="muted">Tocá el título para ver el texto. Estas no se editan tanto: son las que sostienen las reglas.</p>
+
+<div id="biblio"></div>
+</div>
+
+<!-- ══════════════ VIDEO ══════════════ -->
+<div class="pane" id="p_video">
+
+<p class="l" style="margin-top:0">Brief de contenido — para trabajar con Luciana</p>
+<div class="rule" style="margin-top:0">
+<p style="margin-bottom:0"><b>Luciana: esto es un punto de partida, no una orden.</b> Acá está la idea de cada pieza, a quién apunta y qué tiene que lograr. El formato, la estética, el ritmo y la edición son tuyos — sos la profesional. Si una idea no funciona en video, cambiala y avisanos qué viste. Lo único que no se negocia son las reglas de lo que se puede afirmar (están en cada guion).</p>
+</div>
+<p class="muted">La regla creativa de todo: <b>se muestra la solución, no el producto</b>. Nunca un equipo en fondo blanco. Siempre un lugar real, con gente, con calor, y el antes/después.</p>
+
+<h3>Paso 0 · El perfil, antes que nada</h3>
+<ul class="chk">
+<li><b>Bio:</b> "Climatización para lugares grandes · Rotoplast NEA · Corrientes, Chaco, Misiones" + teléfono con enlace.</li>
+<li><b>9 posteos mínimos</b> antes del primer WhatsApp (pueden ser fotos de fábrica + las placas de abajo).</li>
+<li><b>Historias destacadas por tipo de lugar:</b> Galpones · Gimnasios · Salones · Estaciones.</li>
+<li><b>WhatsApp Business</b> configurado: nombre, foto, horario, catálogo.</li>
+</ul>
+
+<h3>Los 8 videos, en orden de producción</h3>
+
+<div class="vid" style="--c:#C8452C"><div class="top"><span class="num">V1</span><span class="t">El problema — "enero adentro"</span><span class="fmt">Reel 15–20s</span></div>
+<p>Un gimnasio o galpón real en pleno calor. Gente transpirando, ventiladores que no alcanzan. Sin marca casi — el problema puro. Es el video que la gente comparte diciendo "tal cual".</p>
+<div class="gui">Texto en pantalla: "Enero. Adentro. 38 grados. ¿Te suena?" — y cierra: "Hay solución para lugares grandes. @simpleclima"</div></div>
+
+<div class="vid" style="--c:#4F7A55"><div class="top"><span class="num">V2</span><span class="t">La solución andando</span><span class="fmt">Reel 20–30s</span></div>
+<p>El equipo funcionando en un lugar reconocible, con sonido ambiente real. La cámara entra del calor de la calle al fresco de adentro. Que se sienta el cambio.</p>
+<div class="gui">"Esto es un climatizador evaporativo. Aire de afuera, enfriado con agua, renovándose todo el tiempo. No es un aire acondicionado — es lo que va donde el aire no conviene."</div></div>
+
+<div class="vid" style="--c:#3F7FA6"><div class="top"><span class="num">V3</span><span class="t">El aire que respirás</span><span class="fmt">Reel 20s</span></div>
+<p>El argumento diferencial para gimnasios y gastro: el aire acondicionado recircula el mismo aire; esto lo renueva. Animación simple de flechas sobre video del lugar.</p>
+<div class="gui">"Un aire acondicionado da vueltas al mismo aire: el olor, el humo, la transpiración de todos. Esto mete aire nuevo de afuera, todo el tiempo. En un gimnasio, se nota el doble."</div></div>
+
+<div class="vid" style="--c:#E2762E"><div class="top"><span class="num">V4</span><span class="t">La cuenta de luz</span><span class="fmt">Placa + reel 15s</span></div>
+<p>La comparación de consumo, visual: dos medidores, o dos facturas. Con la aclaración correcta abajo.</p>
+<div class="gui">"Hasta un 90% menos de consumo que un equipo de aire de capacidad equivalente. Por eso los lugares grandes se climatizan así." <span style="font-style:normal">(pie chico: consumo del equipo según ficha técnica Rotoplast)</span></div></div>
+
+<div class="vid" style="--c:#7A5C86"><div class="top"><span class="num">V5</span><span class="t">La placa del pronóstico</span><span class="fmt">Placa estática</span></div>
+<p>El SMN anticipa un verano con temperaturas sobre lo normal para el NEA. Mapa + titular + fuente citada. Sin vender nada — es el posteo que se guarda y se reenvía.</p>
+<div class="gui">"El Servicio Meteorológico anticipa un verano con temperaturas por encima de lo normal para el NEA. Fuente: SMN, pronóstico trimestral." — nada más.</div></div>
+
+<div class="vid" style="--c:#8A6E3F"><div class="top"><span class="num">V6</span><span class="t">El termómetro</span><span class="fmt">Reel 30s · se filma el primer día de calor</span></div>
+<p>Termómetro afuera al sol, termómetro adentro con el equipo andando. Una toma continua, sin cortes, para que sea creíble. <b>Preparar ahora</b> (termómetro, lugar, permiso) y filmar en septiembre.</p>
+<div class="gui">Sin locución: solo los dos números en pantalla y el lugar. "Afuera / Adentro. [Lugar], [ciudad]."</div></div>
+
+<div class="vid" style="--c:#1F3A2E"><div class="top"><span class="num">V7</span><span class="t">El dueño habla</span><span class="fmt">Reel 20–30s</span></div>
+<p>El primer cliente contento, 20 segundos, con el equipo andando atrás. No un guion: dos preguntas — "¿cómo era antes?" y "¿qué cambió?". Se filma el día que se entrega una instalación.</p>
+<div class="gui">Cierre en placa: nombre del lugar y ciudad. La gente le cree al vecino, no a la marca.</div></div>
+
+<div class="vid" style="--c:#9A9382"><div class="top"><span class="num">V8</span><span class="t">La obra en seco</span><span class="fmt">Timelapse 15s</span></div>
+<p>Una instalación de principio a fin en timelapse, un día de sol. El mensaje de urgencia honesta: esto en noviembre, con lluvia, no se puede hacer.</p>
+<div class="gui">"Instalar ahora: un día y en seco. Instalar en diciembre: cuando pare de llover. La agenda de octubre se llena."</div></div>
+
+<div class="rule w">
+<h3>Cadencia y uso</h3>
+<p><b>Un video por semana</b> alcanza y sostiene dos meses de presencia. Cada video vive tres veces: posteo en el feed, historia destacada en su categoría, y material del reflote de Andrea por WhatsApp.</p>
+<p style="margin-bottom:0"><b>Cuando haya 9 posteos:</b> se sube la base de teléfonos a Meta como audiencia personalizada y se le muestra V2 y V4 a los mismos contactos que Andrea está escribiendo. Presupuesto chico, audiencia de 539 — es reconocimiento, no captación.</p>
+</div>
+</div>
+
+<!-- ══════════════ VIERNES ══════════════ -->
+<div class="pane" id="p_viernes">
+
+<p class="l" style="margin-top:0">La reunión del viernes — 30 minutos, los tres</p>
+<p class="muted">Se mira la pantalla del CRM, no un Excel. Cinco números y tres decisiones. Si un número no está en el CRM, no se discute: se carga y se ve el viernes que viene.</p>
+
+<h3>Los cinco números</h3>
+<table>
+<tr><th>#</th><th>Dónde</th><th>Qué</th><th>Alarma si…</th></tr>
+<tr><td class="n">1</td><td>Hoy</td><td>¿Quedó en cero todos los días?</td><td>Dos días sin vaciar → el sistema se está cayendo. Se resuelve antes que cualquier otra cosa.</td></tr>
+<tr><td class="n">2</td><td>Resumen</td><td>Tasa de respuesta de la semana</td><td>Menos del 15–20% tras dos semanas → el problema es el mensaje. Se cambia el T1, no se insiste.</td></tr>
+<tr><td class="n">3</td><td>Resumen</td><td>Calientes sin cotizar</td><td>Cualquier caliente con más de 48 h sin presupuesto → se cotiza hoy.</td></tr>
+<tr><td class="n">4</td><td>Estadísticas</td><td>Conversión por rubro</td><td>Un rubro duplica al resto → la próxima ola se reordena hacia ahí.</td></tr>
+<tr><td class="n">5</td><td>¿En qué erramos?</td><td>Motivo de pérdida top</td><td>"Precio" arriba → problema de propuesta. "No respondió" → problema de mensaje. "No era el momento" → está bien, vuelven.</td></tr>
+</table>
+
+<h3>Las tres decisiones</h3>
+<div class="rule"><p style="margin:0"><b>1 · ¿Se abre la ola siguiente?</b> Solo si la actual está toda en T2 como mínimo. Decide Seba.</p></div>
+<div class="rule"><p style="margin:0"><b>2 · ¿Qué mensaje ganó esta semana?</b> Si se probó audio contra texto o dos variantes, se mira cuál respondió más y esa queda.</p></div>
+<div class="rule"><p style="margin:0"><b>3 · ¿Qué necesita instalación?</b> Ver cuántos presupuestos están en la calle. Si se acumulan, es el momento de buscar más gente para instalar — en octubre, no en diciembre.</p></div>
+
+<h3>Una vez por mes, además</h3>
+<ul class="chk">
+<li><b>Revisar el pronóstico del SMN</b> (sale mensual). Si se confirma o corrige, se actualiza la placa V5 y el argumento.</li>
+<li><b>Un acuerdo de red nuevo</b> — un instalador, un arquitecto o un corralón sumado al esquema de derivación.</li>
+<li><b>Mirar el mapa global</b> — dónde estamos parados contra el calendario.</li>
+</ul>
+</div>
+
+<!-- ══════════════ CAJA ══════════════ -->
+<div class="pane" id="p_caja">
+
+<p class="l" style="margin-top:0">Las herramientas — cuál es cada una y quién la usa</p>
+
+<table>
+<tr><th>Herramienta</th><th>Qué hace</th><th>La usa</th></tr>
+<tr><td><b>CRM Seguimiento</b><br><span class="muted">seguimiento-rotoplast.vercel.app</span></td><td>La base de los 539, las olas, la pestaña Hoy, el registro de cada contacto. <b>La fuente de la verdad.</b></td><td>Todos, todos los días</td></tr>
+<tr><td><b>Cotizador</b><br><span class="muted">smaccio81.github.io/Cotizador-ROTOPLAST</span></td><td>Precios USD/BNA, mano de obra, comisiones, IVA, repago. De acá sale todo número que ve un cliente.</td><td>Seba y Octavio</td></tr>
+<tr><td><b>Este centro</b></td><td>El plan, los roles, el armador de mensajes, el brief de contenido y la agenda del viernes.</td><td>Todos; Andrea la pestaña Mensajes</td></tr>
+<tr><td><b>Calculadora de equipos</b></td><td>Metros + tipo de lugar → qué equipo va y cuánto consume. Sin precios, a propósito.</td><td>Andrea, para calificar</td></tr>
+<tr><td><b>Tabla de precios de portátiles</b><br><span class="muted">[PENDIENTE — la arma Seba]</span></td><td>Referencia que Andrea sí puede dar, con m² orientativos por modelo.</td><td>Andrea</td></tr>
+<tr><td><b>Instagram + Meta</b></td><td>Respaldo de identidad y campaña de reconocimiento sobre la base propia.</td><td>Luciana con Seba</td></tr>
+</table>
+
+<div class="rule">
+<h3>Cómo se mejora este centro</h3>
+<p style="margin-bottom:0">Esto no es un documento terminado: es la versión 2. Lo que no funcione se corrige acá y queda para todos — un mensaje que no rinde se reescribe, una regla que estorba se saca. La revisión es la del viernes. Si algo se contradice entre este centro y el CRM, <b>manda el CRM</b>.</p>
+</div>
+
+<div class="rule w">
+<h3>Pendientes para completar la caja</h3>
+<p style="margin-bottom:0">1 · La tabla de precios de portátiles (Seba). 2 · La zona de Octavio (para cerrar su recuadro). 3 · El @ del Instagram (para el checklist de Luciana). 4 · Los 5–6 modelos que se manejan en stock (para el CRM y la calculadora). 5 · La foto de una instalación en gym (para el reflote).</p>
+</div>
+
+<footer>Simple Clima · Representante Rotoplast NEA · Centro de operaciones v2 · Temporada 2026/27</footer>
+</div>
+
+</div><!-- /wrap -->
+
+<script>
+/* ───── tabs ───── */
+function abrirTab(p){
+  var btn=document.querySelector('.tab[data-p="'+p+'"]');
+  var pane=document.getElementById('p_'+p);
+  if(!btn||!pane) return;
+  document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('on')});
+  document.querySelectorAll('.pane').forEach(function(x){x.classList.remove('on')});
+  btn.classList.add('on'); pane.classList.add('on');
+}
+document.querySelectorAll('.tab').forEach(function(t){
+  t.addEventListener('click',function(){
+    abrirTab(t.dataset.p);
+    try{localStorage.setItem('sc_tab',t.dataset.p);}catch(e){}
+    try{history.replaceState(null,'','#'+t.dataset.p);}catch(e){}
+    window.scrollTo({top:0});
+  });
+});
+/* al abrir: #hash si viene (GitHub Pages), si no la última pestaña que usó esta persona */
+var h0=(location.hash||'').replace('#','');
+if(!h0){ try{h0=localStorage.getItem('sc_tab')||'';}catch(e){} }
+if(h0) abrirTab(h0);
+
+/* ───── armador ───── */
+var USTED=[[/\bTe escribí\b/g,"Le escribí"],[/\bte escribí\b/g,"le escribí"],[/\bTe hago\b/g,"Le hago"],[/\bte hago\b/g,"le hago"],
+[/\bTe dejo\b/g,"Le dejo"],[/\bte dejo\b/g,"le dejo"],[/\bTe aviso\b/g,"Le aviso"],[/\bte aviso\b/g,"le aviso"],
+[/\bTe comento\b/g,"Le comento"],[/\bte comento\b/g,"le comento"],[/\bTe reflote\b/g,"Le reflote"],[/\bte reflote\b/g,"le reflote"],
+[/\btenés\b/g,"tiene"],[/\bTenés\b/g,"Tiene"],[/\bquerés\b/g,"quiere"],[/\bQuerés\b/g,"Quiere"],
+[/\bpasame\b/g,"páseme"],[/\bPasame\b/g,"Páseme"],[/\bdecime\b/g,"dígame"],[/\bDecime\b/g,"Dígame"],
+[/\bcontame\b/g,"cuénteme"],[/\bavisame\b/g,"avíseme"],[/\bme avisás\b/g,"me avisa"],[/\bte queda\b/g,"le queda"],
+[/\bte sirve\b/g,"le sirve"],[/\bte vuelvo\b/g,"le vuelvo"],[/\bte escribo\b/g,"le escribo"],[/\bte mando\b/g,"le mando"],
+[/\bte paso\b/g,"le paso"],[/\bte confirmo\b/g,"le confirmo"],[/\bte cuento\b/g,"le cuento"],[/\bte contacte\b/g,"lo contacte"],
+[/\bte consulto\b/g,"le consulto"],[/\bte interesa\b/g,"le interesa"],[/\bte parece\b/g,"le parece"],[/\bTe parece\b/g,"Le parece"],
+[/\btu galpón\b/g,"su galpón"],[/\btu caso\b/g,"su caso"],[/\btu gym\b/g,"su gym"],[/\btu sala\b/g,"su sala"],
+[/\btu lugar\b/g,"su lugar"],[/\btu zona\b/g,"su zona"],[/\bcomo el tuyo\b/g,"como el suyo"],[/\bmolestarte\b/g,"molestarlo"],[/\bdejarte\b/g,"dejarlo"],
+[/\bapurarte\b/g,"apurarlo"],[/\bno te jodo\b/g,"no lo molesto"],[/\bse te cae\b/g,"se le cae"],[/\bse te hace\b/g,"se le hace"],
+[/\bperdiste\b/g,"perdió"],[/\bjodo\b/g,"molesto"],[/\bretomás\b/g,"retoma"],[/\bpasarte\b/g,"pasarle"],[/\bvisitarte\b/g,"visitarlo"],
+[/\bme escribís\b/g,"me escribe"],[/\bno te molesto\b/g,"no lo molesto"]];
+
+var SAL={corrientes:"Hola {n}, ¿cómo andás? Soy {r}, de Simple Clima — representamos Rotoplast acá en el NEA.",
+resistencia:"Hola {n}, ¿cómo va? Soy {r}, de Simple Clima (Rotoplast NEA).",
+misiones:"Buen día {n}, ¿cómo anda? Soy {r}, de Simple Clima (Rotoplast NEA).",
+chaco:"Buen día {n}, ¿cómo anda? Soy {r}, de Simple Clima."};
+
+var APE={recontacto:"Te escribí hace un tiempo, cuando todavía estaba fresco y el tema podía esperar. Ahora, pensando en esta temporada, te consulto:",
+frio:"Estás en nuestra lista de contactos pero sin ningún dato, así que no sé si lo que hacemos te sirve.",
+obera:"Nos vimos en abril en la feria de Oberá.",
+agronea:"Nos conocimos en la AgroNEA, en Charata.",
+prospeccion:"Los tengo anotados de cuando estuve recorriendo la zona.",
+referido:"Me pasó su contacto {ref}."};
+
+var CUE={
+gym:"¿cómo se pone la sala en verano?\n\nTenemos una solución para espacios grandes como el tuyo: climatiza y renueva el aire, gastando muy poco. ¿Te parece que te asesoremos? Sin compromiso.",
+galpon:"¿cómo se pone el galpón en verano?\n\nTenemos una solución para lugares grandes o abiertos como el tuyo: climatiza y renueva el aire, gastando muy poco — y funciona aunque el portón esté abierto. ¿Te parece que te asesoremos? Sin compromiso.",
+gastro:"¿cómo la pasaron el verano pasado con el salón o el patio?\n\nTenemos una solución para lugares grandes o que no se pueden cerrar: climatiza y renueva el aire, gastando muy poco. ¿Te parece que te asesoremos? Sin compromiso.",
+estacion:"¿cómo se ponen la playa y los boxes en verano?\n\nTenemos una solución para espacios abiertos o de techo alto: climatiza y renueva el aire, gastando muy poco. ¿Te parece que te asesoremos? Sin compromiso.",
+agro:"¿tiene algún galpón o depósito que en verano se hace imposible?\n\nTenemos una solución para esos lugares: climatiza y renueva el aire, gastando muy poco. ¿Le parece que lo asesoremos? Sin compromiso.",
+nose:"¿tenés algún espacio grande que en verano se hace difícil — galpón, salón, local?\n\nTenemos una solución para esos lugares: climatiza y renueva el aire, gastando muy poco. Si no es tu caso avisame y no te escribo más."};
+
+var SI="¡Buenísimo! ¿Te parece que te contacte quien arma los proyectos? Puede pasar a ver el lugar o pasarte los datos por teléfono, como te quede más cómodo.";
+
+var GYM_APERTURA={
+recontacto:"Te escribí hace un tiempo, cuando todavía estaba fresco y el tema podía esperar. Ahora, pensando en esta temporada, te consulto:",
+frio:"Te escribo pensando en esta temporada, que ya se acerca. Te consulto:",
+obera:"Nos vimos en abril en la feria de Oberá. Pensando en esta temporada, te consulto:",
+agronea:"Nos conocimos en la AgroNEA, en Charata. Pensando en esta temporada, te consulto:",
+prospeccion:"Te tengo anotado de cuando anduve recorriendo la zona. Pensando en esta temporada, te consulto:",
+referido:"Me pasó tu contacto {ref}. Te escribo pensando en esta temporada:"};
+var GYM={
+t1:"Hola {n}, ¿cómo va? Soy {r}, de Simple Clima — Rotoplast en el NEA.\n\n{apertura} ¿cómo se pone la sala en verano?\n\nTenemos una solución para espacios grandes como el tuyo: climatiza y renueva el aire, gastando muy poco. ¿Te parece que te asesoremos? Sin compromiso.",
+t2:"{n}, ¿cómo va? Te reflote el mensaje por el tema del calor de la sala — a esta altura los que lo resuelven llegan tranquilos a la temporada.\n\nSi te interesa te cuento en dos líneas cómo funciona y qué gasto tiene. Y si no es el momento, avisame y no te molesto más.\n\n[+ FOTO de una instalación en gym, cuando esté]",
+t3:"{n}, ¿cómo va? Te comento algo más por si te sirve: además de los equipos que se instalan, tenemos la línea portátil — se enchufan y listo, sin obra. Para una sala es la forma más simple de probar el sistema, y otra inversión.\n\n¿Te paso info de esos?",
+t4:"{n}, ¿cómo va? Para no ponerme insistente con el tema, te dejo mi contacto y lo retomás vos cuando quieras — me escribís y lo vemos con tiempo.\n\n¡Buena temporada!"};
+
+var ET={
+t2:"{n}, ¿cómo va? Te reflote el mensaje por el tema del calor — a esta altura los que lo resuelven llegan tranquilos a la temporada.\n\nSi te interesa te cuento en dos líneas cómo funciona y qué gasto tiene. Y si no es el momento, avisame y no te molesto más.",
+t3:"{n}, ¿cómo va? Te comento algo más por si te sirve: además de los equipos que se instalan, tenemos la línea portátil — se enchufan y listo, sin obra. Es la forma más simple de probar el sistema, y otra inversión.\n\n¿Te paso info de esos?",
+t4:"{n}, ¿cómo va? Para no ponerme insistente con el tema, te dejo mi contacto y lo retomás vos cuando quieras — me escribís y lo vemos con tiempo.\n\n¡Buena temporada!",
+sos:"{n}, ¿seguís por ahí? 🙂\n\nNo sé si se te complicó, si quedó para más adelante o si no te cerró. Cualquiera de las tres me sirve — así sé si te sigo escribiendo o te dejo tranquilo.",
+ret:"Hola {n}, ¿cómo andás? Quedamos en que te escribiera por estas fechas, así que acá estoy cumpliendo 🙂\n\n¿Sigue en pie el tema? Si querés te paso el precio actualizado y la disponibilidad de instalación de este mes."};
+
+function armarMsj(){
+  var et=v('s_et'), or_=v('s_or'), ru=v('s_ru'), zo=v('s_zo');
+  var no=v('s_no').trim()||"{nombre}", re=v('s_re').trim()||"Andrea";
+  var out;
+  if(et==='si'){
+    out=SI;
+  } else if(ru==='gym' && GYM[et]){
+    out=GYM[et].replace('{apertura}', GYM_APERTURA[or_]||GYM_APERTURA.recontacto);
+  } else if(et==='t1'){
+    var partes=[SAL[zo]];
+    partes.push(APE[or_]);
+    partes.push(CUE[ru]);
+    out=partes.join('\n\n');
+    if(zo==='chaco' && (ru==='galpon'||ru==='agro')){
+      out+="\n\nEn los próximos días vamos a estar coordinando visitas por la zona. Si le sirve pasamos, miramos el lugar y le dejamos el número — sin compromiso. ¿Le viene bien que lo tengamos en cuenta?";
+    }
+  } else {
+    out=ET[et]||'';
+  }
+  out=out.replace(/\{n\}/g,no).replace(/\{r\}/g,re).replace(/\{ref\}/g,'[QUIÉN LO REFIRIÓ]');
+  if(zo==='misiones'||zo==='chaco'){ USTED.forEach(function(p){ out=out.replace(p[0],p[1]); }); out=out.replace(/al pedo/g,'de más'); }
+  document.getElementById('salida').value=out;
+  document.getElementById('gmsg').textContent='';
+}
+function v(id){return document.getElementById(id).value}
+function copiarMsj(){
+  var t=document.getElementById('salida');
+  t.select(); t.setSelectionRange(0,99999);
+  try{document.execCommand('copy');document.getElementById('gmsg').textContent='✓ Copiado — pegalo en WhatsApp';}
+  catch(e){document.getElementById('gmsg').textContent='Seleccioná y copiá a mano';}
+}
+function mejorarIA(){
+  var zo=v('s_zo');
+  var trato=(zo==='misiones'||zo==='chaco')?'de usted, corto y concreto':'de vos, cercano';
+  var prompt='Sos el asistente de redacción de Simple Clima, representante de Rotoplast en el NEA argentino (climatización evaporativa para lugares grandes).\n\n'
+  +'Mejorá este mensaje de WhatsApp manteniendo TODAS estas reglas:\n'
+  +'1. NUNCA mencionar precios ni números de descuento.\n'
+  +'2. NUNCA prometer grados de temperatura ("te baja X grados").\n'
+  +'3. Trato '+trato+' (zona: '+document.getElementById('s_zo').selectedOptions[0].text+').\n'
+  +'4. Corto: máximo 5 líneas y SIEMPRE terminar en una pregunta fácil de contestar u ofrecimiento simple.\n'
+  +'5. Tono de persona real, no de folleto. Sin mayúsculas de énfasis, sin emojis de venta (🔥💰⚡), máximo un emoji al final.\n'
+  +'6. Si menciona el clima, solo así: "el Servicio Meteorológico anticipa un verano con temperaturas por encima de lo normal" — con la fuente, nada más.\n'
+  +'7. El posicionamiento: climatizamos lugares grandes donde el aire acondicionado no conviene; el sistema climatiza y renueva el aire gastando muy poco.\n'
+  +'8. En positivo: no arrancar criticando al aire acondicionado.\n\n'
+  +'Contexto: el destinatario es del rubro '+document.getElementById('s_ru').selectedOptions[0].text+'.\n\n'
+  +'MENSAJE A MEJORAR:\n"""\n'+document.getElementById('salida').value+'\n"""\n\n'
+  +'Devolveme solo el mensaje mejorado, listo para pegar en WhatsApp. Si querés, agregá al final una línea con qué cambiaste y por qué.';
+  var a=document.createElement('textarea');a.value=prompt;a.style.position='fixed';a.style.opacity='0';
+  document.body.appendChild(a);a.select();
+  try{document.execCommand('copy');document.getElementById('gmsg').textContent='✓ Prompt copiado — abrí Claude o ChatGPT y pegalo';}
+  catch(e){document.getElementById('gmsg').textContent='No pude copiar — seleccioná a mano';}
+  document.body.removeChild(a);
+}
+['s_et','s_or','s_ru','s_zo','s_no','s_re'].forEach(function(id){
+  document.getElementById(id).addEventListener('change',armarMsj);
+});
+armarMsj();
+
+/* ───── biblioteca de respuestas ───── */
+var LIB=[
+["SÍ","Contestó «dale, contame» — el pase","¡Buenísimo! ¿Te parece que te contacte quien arma los proyectos? Puede pasar a ver el lugar o pasarte los datos por teléfono, como te quede más cómodo."],
+["m²","Para pedir los metros (con objetivo)","¿Me dirías cuántos m² tiene la sala, así vamos pensando una solución específica para tu gym?"],
+["$","«¿Cuánto sale?» — equipo de pared o proyecto","Depende del tamaño del lugar — no te quiero tirar un número al aire y que después no sea.\n\nPasame los m² y la altura del techo y te lo confirma hoy quien arma los proyectos. Si preferís que te llame y lo charlan, también."],
+["$","«¿Cuánto sale?» — portátil","Los portátiles están alrededor de [PRECIO DE LA TABLA] — te lo digo de referencia, porque el número fino depende del modelo que te vaya.\n\nPara saber cuál te sirve necesito los m² del lugar. Pasámelos y te confirmo hoy."],
+["⚡","«¿Cuánto consume?»","Consume hasta un 90% menos que un equipo de aire acondicionado de capacidad equivalente. Por eso se usa en lugares grandes: con aire, la factura de enero no cierra.\n\nSi querés te paso la ficha técnica del modelo que iría en tu caso."],
+["💨","«¿No es como un ventilador?»","Se parece, pero no: el ventilador te mueve el mismo aire caliente de adentro. Este toma aire de afuera, lo enfría al pasar por agua y lo inyecta, mientras saca el aire caliente del lugar.\n\nPor eso funciona incluso con el lugar abierto."],
+["💧","«Acá es muy húmedo, eso no sirve»","Tenés razón en parte: en los días más pesados baja menos la temperatura. Donde más se nota es en los días de calor fuerte, que son los peores del verano.\n\nLo que hace todos los días, llueva o no, es renovarte el aire y moverlo. Y por eso para acá lo dimensionamos con margen — no al límite.\n\nSi querés lo vemos en tu lugar antes de que decidas."],
+["❄️","«El aire acondicionado enfría más»","Sí, en un lugar chico y cerrado el aire es mejor y te lo digo yo.\n\nLo nuestro es para lo otro: lugares grandes, techo alto o que no se pueden cerrar. Y con una diferencia: renueva el aire en vez de dar vueltas al mismo."],
+["🕐","«¿Por qué me escribís ahora, si todavía no hace calor?»","Porque es cuando conviene resolverlo. La agenda de instalación se llena y de noviembre en adelante arrancan las lluvias — instalar con lluvia es obra parada.\n\nEl que lo resuelve ahora lo tiene andando antes de que haga falta."],
+["📄","«Mandame un presupuesto y lo veo»","Dale, te lo mando. ¿Lo vemos el [día] así no te queda perdido entre los mensajes?"],
+["🔨","«¿Hay que romper la pared?»","Depende del equipo. Los de pared van montados en una abertura, así que sí lleva un trabajo de albañilería. Los portátiles no: se enchufan y andan.\n\nCuando sepamos los metros de tu lugar te decimos cuál conviene y qué implica cada uno."],
+["🔊","«¿Hace mucho ruido?»","Los equipos grandes hacen ruido de ventilador industrial — en un galpón o un gimnasio ni se nota. Si es un salón donde la gente charla, hay versiones más silenciosas y también se puede poner el equipo afuera con ducto.\n\nContame qué tipo de lugar es y te digo cuál va."],
+["👥","«Lo hablo con mi socio»","Perfecto. ¿Querés que te lo mande armado para que se lo puedas mostrar? Y decime qué día lo vemos, así no queda en la nada."]
+];
+var bib=document.getElementById('biblio');
+LIB.forEach(function(x,i){
+  var d=document.createElement('div');d.className='lib';
+  d.innerHTML='<div class="h" data-i="'+i+'"><span class="tag">'+x[0]+'</span><span class="nm">'+x[1]+'</span>'+
+  '<button class="cp">Copiar</button></div><pre style="display:none">'+x[2]+'</pre>';
+  bib.appendChild(d);
+});
+bib.addEventListener('click',function(e){
+  var h=e.target.closest('.h'); if(!h) return;
+  var pre=h.parentElement.querySelector('pre');
+  if(e.target.classList.contains('cp')){
+    var a=document.createElement('textarea');a.value=pre.textContent;a.style.position='fixed';a.style.opacity='0';
+    document.body.appendChild(a);a.select();
+    try{document.execCommand('copy');e.target.textContent='✓';}catch(err){}
+    document.body.removeChild(a);
+    setTimeout(function(){e.target.textContent='Copiar';},1500);
+    return;
+  }
+  pre.style.display=pre.style.display==='none'?'block':'none';
+});
+</script>
+</body></html>
