@@ -261,7 +261,7 @@ footer{margin-top:44px;padding-top:16px;border-top:1px solid var(--line);font-si
 <p class="muted">Elegí las opciones y se arma solo. Después <b>editalo en el cuadro</b> — es la base, no una jaula. Lo que cambies vale más que lo que estaba.</p>
 
 <div class="rule g">
-<p style="margin:0"><b>El circuito de gimnasios es el oficial aprobado por Seba y el equipo.</b> T1 ofrece asesorar → si dice sí, pase a quien arma los proyectos → si no contesta, T2 ofrece la línea portátil (la opción simple, sin obra) → T3 muestra una instalación real con foto → T4 cierra cálido dejando la puerta abierta. Cada mensaje trae algo nuevo; ninguno insiste con lo mismo.</p>
+<p style="margin:0"><b>Gimnasios y gastronómicos tienen circuito oficial aprobado por Seba y el equipo — el mismo esquema para los dos:</b> T1 ofrece asesorar → si dice sí, pase a quien arma los proyectos → si no contesta, T2 ofrece la línea portátil (sin obra, con foto de un local real en gastro) → T3 muestra una instalación con foto → T4 cierra cálido dejando la puerta abierta. Cada mensaje trae algo nuevo; ninguno insiste con lo mismo. <b>Portátil o fijo lo decide quien arma el proyecto — Andrea solo abre la puerta.</b></p>
 </div>
 
 <div class="gen">
@@ -281,6 +281,8 @@ footer{margin-top:44px;padding-top:16px;border-top:1px solid var(--line);font-si
 <option value="obera">Feria Oberá abr-26</option>
 <option value="agronea">AgroNEA (Chaco)</option>
 <option value="prospeccion">Prospección propia</option>
+<option value="instagram">Visto por Instagram</option>
+<option value="calle">Visto en la calle</option>
 <option value="referido">Referido</option>
 </select></div>
 <div><label>Rubro</label><select id="s_ru">
@@ -471,7 +473,9 @@ var USTED=[[/\bTe escribí\b/g,"Le escribí"],[/\bte escribí\b/g,"le escribí"]
 [/\btu lugar\b/g,"su lugar"],[/\btu zona\b/g,"su zona"],[/\bcomo el tuyo\b/g,"como el suyo"],[/\bmolestarte\b/g,"molestarlo"],[/\bdejarte\b/g,"dejarlo"],
 [/\bapurarte\b/g,"apurarlo"],[/\bno te jodo\b/g,"no lo molesto"],[/\bse te cae\b/g,"se le cae"],[/\bse te hace\b/g,"se le hace"],
 [/\bperdiste\b/g,"perdió"],[/\bjodo\b/g,"molesto"],[/\bretomás\b/g,"retoma"],[/\bpasarte\b/g,"pasarle"],[/\bvisitarte\b/g,"visitarlo"],
-[/\bme escribís\b/g,"me escribe"],[/\bno te molesto\b/g,"no lo molesto"]];
+[/\bme escribís\b/g,"me escribe"],[/\bno te molesto\b/g,"no lo molesto"],
+[/\bTe comparto\b/g,"Le comparto"],[/\bte comparto\b/g,"le comparto"],[/\bTe tengo anotado\b/g,"Lo tengo anotado"],
+[/\btu salón\b/g,"su salón"],[/\btu local\b/g,"su local"]];
 
 var SAL={corrientes:"Hola {n}, ¿cómo andás? Soy {r}, de Simple Clima — representamos Rotoplast acá en el NEA.",
 resistencia:"Hola {n}, ¿cómo va? Soy {r}, de Simple Clima (Rotoplast NEA).",
@@ -483,6 +487,8 @@ frio:"Estás en nuestra lista de contactos pero sin ningún dato, así que no s�
 obera:"Nos vimos en abril en la feria de Oberá.",
 agronea:"Nos conocimos en la AgroNEA, en Charata.",
 prospeccion:"Los tengo anotados de cuando estuve recorriendo la zona.",
+instagram:"Vi el lugar por Instagram y me quedó anotado.",
+calle:"Pasé por el lugar hace un tiempo y me quedó anotado.",
 referido:"Me pasó su contacto {ref}."};
 
 var CUE={
@@ -501,11 +507,20 @@ frio:"Te escribo pensando en esta temporada, que ya se acerca. Te consulto:",
 obera:"Nos vimos en abril en la feria de Oberá. Pensando en esta temporada, te consulto:",
 agronea:"Nos conocimos en la AgroNEA, en Charata. Pensando en esta temporada, te consulto:",
 prospeccion:"Te tengo anotado de cuando anduve recorriendo la zona. Pensando en esta temporada, te consulto:",
-referido:"Me pasó tu contacto {ref}. Te escribo pensando en esta temporada:"};
+referido:"Me pasó tu contacto {ref}. Te escribo pensando en esta temporada:",
+instagram:"Vi el local por Instagram y me quedó anotado. Pensando en esta temporada, te consulto:",
+calle:"Pasé por tu local hace un tiempo y me quedó anotado. Pensando en esta temporada, te consulto:"};
 var GYM={
 t1:"Hola {n}, ¿cómo va? Soy {r}, de Simple Clima — Rotoplast en el NEA.\n\n{apertura} ¿cómo se pone la sala en verano?\n\nTenemos una solución para espacios grandes como el tuyo: climatiza y renueva el aire, gastando muy poco. ¿Te parece que te asesoremos? Sin compromiso.",
 t2:"{n}, ¿cómo va? Te comento algo más por si te sirve: además de los equipos que se instalan, tenemos la línea portátil — se enchufan y listo, sin obra. Para una sala es la forma más simple de probar el sistema, y otra inversión.\n\n¿Te paso info de esos?",
 t3:"{n}, ¿cómo va? Te comparto cómo quedó un gimnasio acá en la zona, así lo ves andando:\n\n[FOTO O VIDEO DE LA INSTALACIÓN]\n\nSi querés saber qué iría para tu sala, avisame.",
+t4:"{n}, ¿cómo va? Para no ponerme insistente con el tema, te dejo mi contacto y lo retomás vos cuando quieras — me escribís y lo vemos con tiempo.\n\n¡Buena temporada!"};
+
+/* circuito gastronómicos — mismo esquema que gimnasios; portátil/fijo lo decide quien arma el proyecto, nunca Andrea */
+var GASTRO={
+t1:"Hola {n}, ¿cómo va? Soy {r}, de Simple Clima — Rotoplast en el NEA.\n\n{apertura} ¿cómo se pone el salón en verano?\n\nTenemos una solución para el calor: climatiza y renueva el aire gastando muy poco, y anda incluso con el local abierto a la calle. ¿Te parece que te asesoremos? Sin compromiso.",
+t2:"{n}, ¿cómo va? Te comento algo más por si te sirve: tenemos equipos portátiles — se enchufan y listo, sin obra. Así quedó uno en un local acá en la zona:\n\n[FOTO DEL PORTÁTIL EN EL LOCAL]\n\nSi querés saber qué iría para tu salón, avisame.",
+t3:"{n}, ¿cómo va? Te comparto también cómo quedó un local con equipos instalados, así ves las dos formas de resolverlo:\n\n[FOTO O VIDEO DE INSTALACIÓN FIJA]\n\nCualquier consulta, estoy.",
 t4:"{n}, ¿cómo va? Para no ponerme insistente con el tema, te dejo mi contacto y lo retomás vos cuando quieras — me escribís y lo vemos con tiempo.\n\n¡Buena temporada!"};
 
 var ET={
@@ -523,6 +538,8 @@ function armarMsj(){
     out=SI;
   } else if(ru==='gym' && GYM[et]){
     out=GYM[et].replace('{apertura}', GYM_APERTURA[or_]||GYM_APERTURA.recontacto);
+  } else if(ru==='gastro' && GASTRO[et]){
+    out=GASTRO[et].replace('{apertura}', GYM_APERTURA[or_]||GYM_APERTURA.recontacto);
   } else if(et==='t1'){
     var partes=[SAL[zo]];
     partes.push(APE[or_]);
